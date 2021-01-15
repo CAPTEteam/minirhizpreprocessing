@@ -1,5 +1,5 @@
 """
-Command line interface for the minirhizpreprocessing module.
+Command line interface for the minirhizepreprocessing module.
 """
 import argparse
 import logging
@@ -8,13 +8,17 @@ import sys
 import minirhizpreprocessing
 from . import cliutils
 
+from pathlib import Path
+import cv2
+import numpy as np
+from tqdm import tqdm
 
 _LOGGER = logging.getLogger(__name__)
 
 
 def create_parser():
 	"""
-	Create the parser for the minirhizpreprocessing command.
+	Create the parser for the minirhizepreprocessing command.
 
 	:return: Configured parser.
 	:rtype: argparse.ArgumentParser
@@ -32,10 +36,25 @@ def create_parser():
 
 	# Positional arguments, declaration order is important
 	parser.add_argument(
+		'input_folder',
+		type=cliutils.sanitize_path,
+		help='Directory where the input images are stocked'
+		)
+
+	# Positional arguments, declaration order is important
+	parser.add_argument(
 		'output_folder',
 		type=cliutils.sanitize_path,
 		help='Directory where the results will be generated.'
 		)
+
+	# Positional arguments, declaration order is important
+	parser.add_argument(
+		'process',
+		type=cliutils.sanitize_path,
+		help='process to apply : ex rotation'
+		)
+
 
 	# Optional arguments
 	cliutils.add_boolean_flag(parser, 'debug', 'Enable debug outputs. Imply --verbose.')
@@ -62,8 +81,23 @@ def main(args=None):
 	_LOGGER.debug('command: %s', ' '.join(sys.argv))
 	_LOGGER.debug('version: %s', minirhizpreprocessing.__version__)
 
-	# Call the main function of the module
+	# check the method that have been called
+	method = args.process
 
+	# Call the main function of the module
+	extensions = ("jpg","tif","png")
+	images= []
+	for ext in extensions:
+		images += list(Path(args.input_folder).glob(f"*{ext}"))
+
+	for imgp in tqdm(images,desc="Rotate images"):
+		img = cv2.imread(str(imgp))
+
+		if 'rotation' in str(method):
+			img = cv2.rotate(img, cv2.ROTATE_90_CLOCKWISE)
+
+		out = Path(args.output_folder) / imgp.name
+		cv2.imwrite(str(out),img)
 
 if __name__ == '__main__':
 	main()
