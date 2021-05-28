@@ -94,7 +94,7 @@ def main(args=None):
 		img = cv2.imread(str(imgp))
 
 		if 'rotation' in str(method):
-			img = cv2.rotate(img, cv2.ROTATE_90_COUNTERCLOCKWISE)
+			img = cv2.rotate(img, cv2.ROTATE_90_CLOCKWISE)
 
 		out = Path(args.output_folder) / imgp.name
 		cv2.imwrite(str(out),img)
