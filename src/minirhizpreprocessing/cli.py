@@ -85,7 +85,7 @@ def main(args=None):
 	method = args.process
 
 	# Call the main function of the module
-	extensions = ("jpg","tif","png")
+	extensions = ("jpg","tif","png","JPG","jpeg","JPEG")
 	images= []
 	for ext in extensions:
 		images += list(Path(args.input_folder).glob(f"*{ext}"))
