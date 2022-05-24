@@ -1,3 +1,5 @@
+git+ssh://git@gitlabprod.arvalis-fr.com/capteurs/internallibraries.git
+click==8.1.2
 numpy==1.21.3
 opencv-python==4.5.4.58
 tqdm==4.62.3
